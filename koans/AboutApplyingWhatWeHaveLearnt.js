@@ -40,7 +40,7 @@ describe("About Applying What We Have Learnt", function() {
       var productsICanEat = [];
       
       /* solve using filter() & all() / any() */
-      productsICanEat = _.filter(products, function(x) { return  x.containsNuts === false && _.any(x.ingredients, function(y) { console.log(y); }) }); 
+      productsICanEat = _.filter(products, function(x) { return  x.containsNuts === false && _.all(x.ingredients, function(y) { return y !== "mushrooms";}) }); 
       
       expect(productsICanEat.length).toBe(1);
   });
@@ -61,22 +61,13 @@ describe("About Applying What We Have Learnt", function() {
 
   it("should add all the natural numbers below 1000 that are multiples of 3 or 5 (functional)", function () {
     
-    var mult3 = _.reduce(_.range(3, 1000, 3), function(memo, x) { return memo + x; }, 0);
-      
-      console.log(mult3);
-      
-    var mult5 = _.reduce( _.range(5, 1000, 5), function(memo, x) { return memo + x; }, 0);
-      
-      console.log(mult5); 
-      
-      console.log(_.range(3, 1000, 3));
-      console.log(_.range(5, 1000, 5));
+    var mult3 = _.reduce(_.range(3, 1000, 3), function(memo, x) { if (x % 5 === 0) { return memo; } else { return memo + x; }}, 0);
+        
+    var mult5 = _.reduce( _.range(5, 1000, 5), function(memo, x) { return memo + x;}, 0);
       
     var sum = mult3 + mult5;
       /* try chaining range() and reduce() */
 
-      
-      
     expect(233168).toBe(sum);
   });
 
@@ -90,15 +81,22 @@ describe("About Applying What We Have Learnt", function() {
         }
     }
 
-    expect(ingredientCount['mushrooms']).toBe(FILL_ME_IN);
+    expect(ingredientCount['mushrooms']).toBe(2);
   });
 
   it("should count the ingredient occurrence (functional)", function () {
     var ingredientCount = { "{ingredient name}": 0 };
 
     /* chain() together map(), flatten() and reduce() */
+    var ingredients = _(products).chain()
+        .map(function(x) { return x.ingredients; })
+        .flatten()
+        .reduce(function(memo, y) {
+            memo[y] = (memo[y] || 0) + 1;
+            return memo; }, ingredientCount)
+        .value()
 
-    expect(ingredientCount['mushrooms']).toBe(FILL_ME_IN);
+    expect(ingredientCount['mushrooms']).toBe(2);
   });
 
   /*********************************************************************************/
